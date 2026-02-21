@@ -16,6 +16,7 @@ type Option = {
 type Poll = {
   id: string;
   question: string;
+  status: string;
   options: Option[];
   createdAt: Date;
   durationSeconds: number;
@@ -46,9 +47,9 @@ export default function AdminGate({ polls }: AdminGateProps) {
       <div className="space-y-6">
         <CreatePollForm />
         <div className="bg-surface rounded-xl border border-border p-6 shadow-sm space-y-6">
-          <AdminPollList polls={polls.filter((p) => (p as { status?: string }).status === "open")} pin={pin} />
+          <AdminPollList polls={polls.filter((p) => p.status === "open")} pin={pin} />
           <div className="border-t border-border pt-6">
-            <AdminArchive polls={polls.filter((p) => (p as { status?: string }).status === "closed")} pin={pin} />
+            <AdminArchive polls={polls.filter((p) => p.status === "closed")} pin={pin} />
           </div>
         </div>
       </div>
