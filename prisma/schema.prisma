@@ -11,6 +11,7 @@ model Poll {
   id              String   @id @default(cuid())
   question        String
   durationSeconds Int      @default(60)
+  status          String   @default("closed")
   createdAt       DateTime @default(now())
   options         Option[]
 }

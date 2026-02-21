@@ -15,6 +15,7 @@ export default function CreatePollForm() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [durationSeconds, setDurationSeconds] = useState(60);
+  const [status, setStatus] = useState<"open" | "closed">("open");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -48,6 +49,7 @@ export default function CreatePollForm() {
       options.filter((o) => o.trim()).join("\n")
     );
     formData.set("durationSeconds", String(durationSeconds));
+    formData.set("status", status);
     const result = await createPoll(formData);
     setLoading(false);
 
@@ -60,6 +62,7 @@ export default function CreatePollForm() {
     setQuestion("");
     setOptions(["", ""]);
     setDurationSeconds(60);
+    setStatus("open");
   };
 
   if (success) {
@@ -92,6 +95,34 @@ export default function CreatePollForm() {
             className="w-full px-4 py-3 rounded-lg border border-border bg-bg text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-border"
             required
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-text/80 mb-2">
+            Видимость
+          </label>
+          <div className="flex gap-3">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="status"
+                checked={status === "open"}
+                onChange={() => setStatus("open")}
+                className="accent-border"
+              />
+              <span className="text-sm">Открытый — сразу на ленте</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="status"
+                checked={status === "closed"}
+                onChange={() => setStatus("closed")}
+                className="accent-border"
+              />
+              <span className="text-sm">Закрытый — в архив</span>
+            </label>
+          </div>
         </div>
 
         <div>

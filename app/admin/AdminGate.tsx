@@ -5,6 +5,7 @@ import { Lock } from "lucide-react";
 import { verifyAdminPin } from "@/app/actions";
 import CreatePollForm from "./CreatePollForm";
 import AdminPollList from "./AdminPollList";
+import AdminArchive from "./AdminArchive";
 
 type Option = {
   id: string;
@@ -44,8 +45,11 @@ export default function AdminGate({ polls }: AdminGateProps) {
     return (
       <div className="space-y-6">
         <CreatePollForm />
-        <div className="bg-surface rounded-xl border border-border p-6 shadow-sm">
-          <AdminPollList polls={polls} pin={pin} />
+        <div className="bg-surface rounded-xl border border-border p-6 shadow-sm space-y-6">
+          <AdminPollList polls={polls.filter((p) => (p as { status?: string }).status === "open")} pin={pin} />
+          <div className="border-t border-border pt-6">
+            <AdminArchive polls={polls.filter((p) => (p as { status?: string }).status === "closed")} pin={pin} />
+          </div>
         </div>
       </div>
     );

@@ -13,6 +13,7 @@ export async function createPoll(formData: FormData) {
   const question = formData.get("question") as string;
   const optionsRaw = formData.get("options") as string;
   const duration = parseInt(formData.get("durationSeconds") as string, 10);
+  const status = (formData.get("status") as string) === "open" ? "open" : "closed";
 
   if (!question?.trim()) {
     return { error: "Введите вопрос" };
@@ -37,6 +38,7 @@ export async function createPoll(formData: FormData) {
     data: {
       question: question.trim(),
       durationSeconds,
+      status,
       options: {
         create: options.map((text) => ({ text })),
       },
@@ -55,6 +57,9 @@ export async function vote(optionId: string, pollId: string) {
   });
   if (!option || option.pollId !== pollId) {
     return { error: "Invalid vote" };
+  }
+  if (option.poll.status !== "open") {
+    return { error: "Опрос недоступен" };
   }
   const endAt = new Date(option.poll.createdAt);
   endAt.setSeconds(endAt.getSeconds() + (option.poll.durationSeconds ?? 60));
@@ -99,6 +104,26 @@ export async function deletePoll(pollId: string, pin: string) {
     if (err.code === "P2025") {
       return { success: true };
     }
+    throw e;
+  }
+  revalidatePath("/");
+  revalidatePath("/admin");
+  return { success: true };
+}
+
+export async function publishPoll(pollId: string, pin: string) {
+  const adminPin = process.env.ADMIN_PIN || "1234";
+  if (pin !== adminPin) {
+    return { error: "Неверный PIN" };
+  }
+  try {
+    await prisma.poll.update({
+      where: { id: pollId },
+      data: { status: "open", createdAt: new Date() },
+    });
+  } catch (e) {
+    const err = e as { code?: string };
+    if (err.code === "P2025") return { error: "Опрос не найден" };
     throw e;
   }
   revalidatePath("/");

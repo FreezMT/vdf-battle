@@ -9,6 +9,7 @@ export default async function HomePage() {
   const votedPollIds = votedRaw ? votedRaw.split(",") : [];
 
   const polls = await prisma.poll.findMany({
+    where: { status: "open" },
     orderBy: { createdAt: "desc" },
     include: { options: true },
   });

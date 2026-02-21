@@ -52,17 +52,22 @@ function removeDeletedId(pollId: string) {
 
 export default function AdminPollList({ polls: initialPolls, pin }: AdminPollListProps) {
   const [polls, setPolls] = useState<Poll[]>(() =>
-    initialPolls.filter((p) => !getDeletedIds().has(p.id))
+    initialPolls.filter(
+      (p) => !getDeletedIds().has(p.id) && (p as { status?: string }).status === "open"
+    )
   );
   const [isPending, startTransition] = useTransition();
 
   const fetchPolls = useCallback(async () => {
     try {
-      const res = await fetch(`/api/polls?_=${Date.now()}`, { cache: "no-store" });
+      const res = await fetch(`/api/polls?all=1&_=${Date.now()}`, { cache: "no-store" });
       if (res.ok) {
-        const data = (await res.json()) as Poll[];
+        const data = (await res.json()) as (Poll & { status?: string })[];
         const deleted = getDeletedIds();
-        setPolls(data.filter((p) => !deleted.has(p.id)));
+        const open = data.filter(
+          (p) => p.status === "open" && !deleted.has(p.id)
+        );
+        setPolls(open);
       }
     } catch {
       // ignore
