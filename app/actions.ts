@@ -9,15 +9,12 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 const DURATION_OPTIONS = [15, 30, 60, 120] as const;
 
+const DEFAULT_QUESTION = "Кто выиграет батл?";
+
 export async function createPoll(formData: FormData) {
-  const question = formData.get("question") as string;
   const optionsRaw = formData.get("options") as string;
   const duration = parseInt(formData.get("durationSeconds") as string, 10);
   const status = (formData.get("status") as string) === "open" ? "open" : "closed";
-
-  if (!question?.trim()) {
-    return { error: "Введите вопрос" };
-  }
 
   const options = optionsRaw
     ? optionsRaw
@@ -36,7 +33,7 @@ export async function createPoll(formData: FormData) {
 
   await prisma.poll.create({
     data: {
-      question: question.trim(),
+      question: DEFAULT_QUESTION,
       durationSeconds,
       status,
       options: {

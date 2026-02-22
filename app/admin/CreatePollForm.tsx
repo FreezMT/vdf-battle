@@ -12,7 +12,6 @@ const DURATION_OPTIONS = [
 ] as const;
 
 export default function CreatePollForm() {
-  const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [durationSeconds, setDurationSeconds] = useState(60);
   const [status, setStatus] = useState<"open" | "closed">("open");
@@ -43,7 +42,6 @@ export default function CreatePollForm() {
     setError("");
     setLoading(true);
     const formData = new FormData();
-    formData.set("question", question);
     formData.set(
       "options",
       options.filter((o) => o.trim()).join("\n")
@@ -59,7 +57,6 @@ export default function CreatePollForm() {
     }
 
     setSuccess(true);
-    setQuestion("");
     setOptions(["", ""]);
     setDurationSeconds(60);
     setStatus("open");
@@ -83,20 +80,6 @@ export default function CreatePollForm() {
     <div className="bg-surface rounded-xl border border-border p-6 shadow-sm">
       <h1 className="text-lg font-semibold text-text mb-4">Создать опрос</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-text/80 mb-1">
-            Вопрос
-          </label>
-          <input
-            type="text"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Например: Кто выиграл батл?"
-            className="w-full px-4 py-3 rounded-lg border border-border bg-bg text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-border"
-            required
-          />
-        </div>
-
         <div>
           <label className="block text-sm font-medium text-text/80 mb-2">
             Видимость
