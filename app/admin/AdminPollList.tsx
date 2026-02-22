@@ -124,6 +124,9 @@ export default function AdminPollList({ polls: initialPolls, pin }: AdminPollLis
             >
               <div className="min-w-0 flex-1">
                 <p className="text-text font-medium truncate">{poll.question}</p>
+                <p className="text-text/60 text-xs mt-1.5">
+                  {poll.options.map((o) => o.text).join(" · ")}
+                </p>
                 <div className="flex items-center gap-3 mt-2 text-text/60 text-xs flex-wrap">
                   <span className="flex items-center gap-1">
                     <Timer size={12} />
