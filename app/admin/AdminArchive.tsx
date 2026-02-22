@@ -119,9 +119,14 @@ export default function AdminArchive({ polls: initialPolls, pin }: AdminArchiveP
           {polls.map((poll) => (
             <div
               key={poll.id}
-              className="bg-bg rounded-lg border border-border p-3 text-sm flex items-center justify-between gap-3"
+              className="bg-bg rounded-lg border border-border p-3 text-sm flex items-start justify-between gap-3"
             >
-              <p className="text-text font-medium truncate flex-1 min-w-0">{poll.question}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-text font-medium truncate">{poll.question}</p>
+                <p className="text-text/60 text-xs mt-1.5">
+                  {poll.options.map((o) => o.text).join(" · ")}
+                </p>
+              </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button
                   type="button"
