@@ -12,6 +12,8 @@ const DURATION_OPTIONS = [15, 30, 60, 120] as const;
 const DEFAULT_QUESTION = "Кто выиграет батл?";
 
 export async function createPoll(formData: FormData) {
+  const questionRaw = (formData.get("question") as string)?.trim();
+  const question = questionRaw || DEFAULT_QUESTION;
   const optionsRaw = formData.get("options") as string;
   const duration = parseInt(formData.get("durationSeconds") as string, 10);
   const status = (formData.get("status") as string) === "open" ? "open" : "closed";
@@ -33,7 +35,7 @@ export async function createPoll(formData: FormData) {
 
   await prisma.poll.create({
     data: {
-      question: DEFAULT_QUESTION,
+      question,
       durationSeconds,
       status,
       options: {
